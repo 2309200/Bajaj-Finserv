@@ -14,7 +14,7 @@ app.use(express.json());
 // extra packages
 
 // routes
-app.use("/api/v1/user", userRouter);
+app.use("/api/v1/bfhl", userRouter);
 
 
 const port = process.env.PORT || 8080;

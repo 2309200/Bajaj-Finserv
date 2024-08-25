@@ -1,42 +1,56 @@
-const User = require("../models/User")
-
-const createUser = async (req, res) => {
+const sortValues = async (req, res) => {
     try {
-      const { status, userId, collegeEmail, collegeRollNumber, numbers, alphabets } = req.body;
+      const { data, isNumber, isAlphabet, highestLowerCaseAlphabet } = req.body;
   
-      // Validation logic can go here
-      if (!status || !userId || !collegeEmail || !collegeRollNumber || !numbers || !alphabets) {
+      if (!data || !Array.isArray(data)) {
         return res.status(400).json({
           is_success: false,
-          message: "Missing required fields",
+          message: "Data should be an array of strings",
         });
       }
   
-      // Compute highest lowercase alphabet
-      const lowercaseAlphabets = alphabets.filter(char => /^[a-z]$/.test(char));
-      const highestLowercaseAlphabet = lowercaseAlphabets.length > 0 ? 
-        lowercaseAlphabets.sort().reverse()[0] : '';
+      // Separate numbers, alphabets, and find the highest lowercase alphabet
+      const numbers = [];
+      const alphabets = [];
+      let highestLowercaseAlphabet = '';
   
-      const newUser = await User.create({
-        status,
-        userId,
-        collegeEmail,
-        collegeRollNumber,
-        numbers,
-        alphabets,
-        highestLowercaseAlphabet,
+      data.forEach(item => {
+        if (!isNaN(item)) {
+          numbers.push(item);
+        } else if (/^[a-zA-Z]$/.test(item)) {
+          alphabets.push(item);
+          if (/^[a-z]$/.test(item) && item > highestLowercaseAlphabet) {
+            highestLowercaseAlphabet = item;
+          }
+        }
       });
   
-      return res.status(201).json({
+      // Static values for user_id, email, and roll_number
+      const userId = "john_doe_17091999";
+      const email = "john@xyz.com";
+      const rollNumber = "ABCD123";
+  
+      // Build the response based on the flags
+      const response = {
         is_success: true,
-        user_id: newUser.userId,
-        status: newUser.status,
-        collegeEmail: newUser.collegeEmail,
-        collegeRollNumber: newUser.collegeRollNumber,
-        numbers: newUser.numbers,
-        alphabets: newUser.alphabets,
-        highestLowercaseAlphabet: newUser.highestLowercaseAlphabet,
-      });
+        user_id: userId,
+        email: email,
+        roll_number: rollNumber,
+      };
+  
+      if (isNumber) {
+        response.numbers = numbers;
+      }
+  
+      if (isAlphabet) {
+        response.alphabets = alphabets;
+      }
+  
+      if (highestLowerCaseAlphabet) {
+        response.highest_lowercase_alphabet = [highestLowercaseAlphabet];
+      }
+  
+      return res.status(201).json(response);
   
     } catch (error) {
       console.error(error);
@@ -46,28 +60,15 @@ const createUser = async (req, res) => {
       });
     }
   };
-  
-  // GET /bfhl
-  const getAllUser = async (req, res) => {
-    try {
-      const users = await User.find(); // Corrected method
-      return res.status(200).json({
-        users, // Optionally include the users in the response if needed
-      });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({
-        is_success: false,
-        message: "Internal server error",
-      });
-    }
+
+  const getOperationCode = (req, res) => {
+    return res.status(200).json({
+      operation_code: 1,
+    });
   };
-  
-  
- 
   
   module.exports = {
-    getAllUser,
-    createUser,
-    
+    sortValues,
+    getOperationCode
   };
+  

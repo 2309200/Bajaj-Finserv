@@ -2,11 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  getAllUser,
-  createUser,
-  
+  sortValues,
+  getOperationCode
 } = require("../controllers/User");
 
-router.route("/").post(createUser).get(getAllUser);
+router.route("/bfhl").post(sortValues).get(getOperationCode);
 
 module.exports = router;
