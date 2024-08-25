@@ -2,6 +2,9 @@ require("dotenv").config();
 require("express-async-errors");
 const express = require("express");
 const app = express();
+const cors = require('cors');
+
+
 
 // Connect DB (commented out)
 // const connectDB = require("./db/connect");
@@ -11,6 +14,7 @@ const userRouter = require("../backend/routes/User");
 
 // Middleware
 app.use(express.json());
+app.use(cors)
 
 // Root route
 app.get("/", (req, res) => {
