@@ -12,6 +12,11 @@ const userRouter = require("../backend/routes/User");
 // Middleware
 app.use(express.json());
 
+// Root route
+app.get("/", (req, res) => {
+  res.send(`Server is listening on port ${port}`);
+});
+
 // Routes
 app.use("/api/v1", userRouter);
 
