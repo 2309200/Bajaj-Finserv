@@ -4,17 +4,12 @@ const express = require("express");
 const app = express();
 const cors = require('cors');
 
-
-
-// Connect DB (commented out)
-// const connectDB = require("./db/connect");
-
-// Routers
-const userRouter = require("../backend/routes/User");
-
 // Middleware
 app.use(express.json());
-app.use(cors)
+app.use(cors()); // Corrected usage
+
+// Routers
+const userRouter = require("./routes/User"); // Adjusted path to match your structure
 
 // Root route
 app.get("/", (req, res) => {
@@ -28,7 +23,7 @@ const port = process.env.PORT || 8080;
 
 const start = async () => {
   try {
-    // await connectDB(process.env.MONGO_URI);
+    // await connectDB(process.env.MONGO_URI); // Uncomment when DB is used
     app.listen(port, console.log(`Server is listening at port ${port}...`));
   } catch (error) {
     console.log(error);
